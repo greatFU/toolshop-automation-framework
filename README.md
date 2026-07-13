@@ -1,6 +1,6 @@
 # Toolshop Automation Framework
 
-UI and API test automation framework for the Toolshop e-commerce application.
+UI test automation framework for the Toolshop e-commerce application.
 
 ## Technologies
 
@@ -8,7 +8,6 @@ UI and API test automation framework for the Toolshop e-commerce application.
 - Selenium WebDriver
 - TestNG
 - Maven
-- REST Assured
 
 ## Application under test
 
