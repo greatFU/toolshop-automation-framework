@@ -31,7 +31,7 @@ public class BaseTest {
 			driver.quit();
 	}
 
-	public WebDriver initializeDriver() throws IOException {
+	protected WebDriver initializeDriver() throws IOException {
 		Properties prop = new Properties();
 		String configPath = System.getProperty("user.dir") + "/src/test/resources/config.properties";
 
@@ -44,18 +44,18 @@ public class BaseTest {
 		String browserName = prop.
 				getProperty("browser").
 				trim().toLowerCase();
-
+		WebDriver createdDriver;
 		switch(browserName) {
 			case "chrome":
-				driver = new ChromeDriver();
+				createdDriver = new ChromeDriver();
 				break;
 				
 			default:
 				throw new IllegalArgumentException("Unsupported browser: " + browserName);
 		}
 		
-		driver.manage().window().maximize();
-		return driver;
+		createdDriver.manage().window().maximize();
+		return createdDriver;
 		
 	}
 

@@ -44,7 +44,7 @@ public class LoginPage extends AbstractComponent {
 		waitForClickability(loginSubmit).click();
 	}
 	
-	public AdminDashboardPage submitValidLogin(String email, String password)
+	public AdminDashboardPage submitAdminLogin(String email, String password)
 	{
 		submitLogin(email,password);
 		return new AdminDashboardPage(driver);
