@@ -14,7 +14,7 @@ public class LoginPageTest extends BaseTest {
 	public void adminShouldLoginWithValidCredentials() {
 		LoginPage loginPage = homePage.goToLoginPage();
 
-		AdminDashboardPage dashboardPage = loginPage.submitValidLogin("admin@practicesoftwaretesting.com",
+		AdminDashboardPage dashboardPage = loginPage.submitAdminLogin("admin@practicesoftwaretesting.com",
 				"welcome01");
 
 		Assert.assertTrue(dashboardPage.isLoaded(), "Admin dashboard was not loaded");
