@@ -14,15 +14,21 @@ UI test automation framework for the Toolshop e-commerce application.
 Practice Software Testing:
 https://practicesoftwaretesting.com/
 
-## Implemented tests
+## Implemented test coverage
 
 - Home page loading
 - Product cards visibility
-- Valid admin login
-- Invalid login validation
+- Valid admin authentication
+- Invalid authentication
 - Product details validation
 - Add one product to cart
 - Add multiple products to cart
+- Change product quantity
+- Validate product line total
+- Validate cart total
+- Remove selected product
+- Validate empty cart state
+- Logged-in checkout navigation
 
 ## Project structure
 

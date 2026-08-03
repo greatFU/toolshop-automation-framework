@@ -7,9 +7,9 @@ import org.openqa.selenium.support.PageFactory;
 
 import com.fernandoqa.components.AbstractComponent;
 
-public class AdminDashboardPage extends AbstractComponent {
+public class CustomerDashboardPage extends AbstractComponent {
 
-	public AdminDashboardPage(WebDriver driver) {
+	public CustomerDashboardPage(WebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 	}
@@ -21,11 +21,11 @@ public class AdminDashboardPage extends AbstractComponent {
 	private WebElement userMenu;
 
 	public boolean isLoaded() {
-		waitForUrl("/admin/dashboard");
+		waitForUrl("/account");
 		return waitForVisibility(dashboardTitle).isDisplayed();
 	}
 
-	public boolean isUserMenuLoaded() {
+	public boolean isUserMenuDisplayed() {
 		return waitForClickability(userMenu).isDisplayed();
 	}
 }

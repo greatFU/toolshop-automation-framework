@@ -2,9 +2,9 @@ package com.fernandoqa.flows;
 
 import java.util.List;
 
-import com.fernandoqa.pageobjects.CartPage;
 import com.fernandoqa.pageobjects.HomePage;
 import com.fernandoqa.pageobjects.ProductPage;
+import com.fernandoqa.pageobjects.cart.CartPage;
 
 public class ShoppingFlow {
 

@@ -16,10 +16,9 @@
 	</properties>
 
 
-
 	<dependencies>
-	
-	
+
+
 		<!-- Source:
 		https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
@@ -63,6 +62,13 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.3.0</version>
+					<configuration>
+						<suiteXmlFiles>
+							<suiteXmlFile>
+								${project.basedir}/testSuites/testng.xml
+							</suiteXmlFile>
+						</suiteXmlFiles>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>

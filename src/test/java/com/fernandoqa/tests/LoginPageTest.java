@@ -10,7 +10,7 @@ import com.fernandoqa.testcomponents.BaseTest;
 public class LoginPageTest extends BaseTest {
 
 	
-	@Test()
+	@Test
 	public void adminShouldLoginWithValidCredentials() {
 		LoginPage loginPage = homePage.goToLoginPage();
 
@@ -19,7 +19,7 @@ public class LoginPageTest extends BaseTest {
 
 		Assert.assertTrue(dashboardPage.isLoaded(), "Admin dashboard was not loaded");
 
-		Assert.assertTrue(dashboardPage.isUserMenuDisplayed(), "User menu was not displayed after successful login");
+		Assert.assertTrue(dashboardPage.isUserMenuLoaded(), "User menu was not displayed after successful login");
 	}
 
 	@Test

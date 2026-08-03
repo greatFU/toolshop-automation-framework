@@ -29,6 +29,7 @@ public class LoginPage extends AbstractComponent {
 	
 	@FindBy(css = ".help-block")
 	private WebElement errorMessage;
+	
 
 	
 	
@@ -47,7 +48,15 @@ public class LoginPage extends AbstractComponent {
 	public AdminDashboardPage submitAdminLogin(String email, String password)
 	{
 		submitLogin(email,password);
+		waitForUrl("/admin/dashboard");
 		return new AdminDashboardPage(driver);
+	}
+	
+	public CustomerDashboardPage submitCustomerLogin(String email, String password)
+	{
+		submitLogin(email,password);
+		waitForUrl("/account");
+		return new CustomerDashboardPage(driver);
 	}
 	
 	public LoginPage submitInvalidLogin(String email, String password) {
