@@ -30,6 +30,11 @@ public class BaseTest {
 		if (driver != null)
 			driver.quit();
 	}
+	
+	public WebDriver getDriver()
+	{
+		return driver;
+	}
 
 	protected WebDriver initializeDriver() throws IOException {
 		Properties prop = new Properties();

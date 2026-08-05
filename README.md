@@ -37,3 +37,26 @@ https://practicesoftwaretesting.com/
 - flows — reusable business workflows
 - testcomponents — browser setup and teardown
 - tests — TestNG test classes
+
+## Reporting
+
+The framework uses TestNG listeners and ExtentReports.
+
+When a test fails, the framework automatically:
+
+- records the exception;
+- captures a browser screenshot;
+- attaches the screenshot to the HTML report.
+
+Generated output:
+
+- Extent report: `reports/index.html`
+- Failure screenshots: `screenshots/`
+- Surefire results: `target/surefire-reports/`
+
+## Known issues
+
+`adminUserMenuShouldBeDisplayedAfterLogin` documents a confirmed
+application defect and belongs to the `knownBug` TestNG group.
+
+The regression suite excludes this group through `testng.xml`.

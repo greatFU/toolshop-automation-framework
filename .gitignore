@@ -12,3 +12,5 @@ screenshots/
 
 *.log
 .DS_Store
+
+.vscode/
