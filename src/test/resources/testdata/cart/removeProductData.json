@@ -1,0 +1,10 @@
+[
+  {
+    "productToRemove": "Hammer",
+    "productToKeep": "Slip Joint Pliers"
+  },
+  {
+    "productToRemove": "Pliers",
+    "productToKeep": "Combination Pliers"
+  }
+]

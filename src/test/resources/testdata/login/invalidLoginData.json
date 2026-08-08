@@ -1,0 +1,7 @@
+[
+  {
+    "email": "Not@Exist.com",
+    "password": "NotExist1",
+    "expectedErrorMessage": "Invalid email or password"
+  }
+]

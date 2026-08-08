@@ -9,7 +9,7 @@
 </groups>
 
 <listeners>
-	<listener class-name="com.fernandoqa.testcomponents.Listeners"></listener>
+	<listener class-name="com.fernandoqa.testcomponents.TestListener"></listener>
 </listeners>
 
     <test name="UI Regression Tests">

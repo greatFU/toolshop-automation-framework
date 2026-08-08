@@ -1,9 +1,12 @@
 package com.fernandoqa.tests;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.fernandoqa.flows.ShoppingFlow;
@@ -21,31 +24,31 @@ public class CartPageTest extends BaseTest {
 		CartPage cartPage = shoppingFlow.addProducts(homePage, products);
 
 		List<String> actualProducts = cartPage.getProductNames();
-		
+
 		Assert.assertEquals(actualProducts.size(), products.size(), "Unexpected number of products in cart");
 		Assert.assertTrue(actualProducts.containsAll(products),
 				"Expected products: " + products + ", but cart contained: " + actualProducts);
 	}
 
-	@Test
-	public void selectedItemShouldBeDeleted() {
-		String productToRemove = "Hammer";
-		String productToKeep = "Slip Joint Pliers";
+	@Test(dataProvider = "removeProductData")
+	public void selectedItemShouldBeDeleted(Map<String, String> input) {
 
-		List<String> products = List.of(productToKeep, productToRemove);
+		List<String> products = List.of(input.get("productToKeep"), input.get("productToRemove"));
 		ShoppingFlow shoppingFlow = new ShoppingFlow();
 		CartPage cartPage = shoppingFlow.addProducts(homePage, products);
 
-		cartPage.removeProduct(productToRemove);
-		Assert.assertFalse(cartPage.containsProduct(productToRemove),
-				productToRemove + " is still displayed after removal");
-		Assert.assertTrue(cartPage.containsProduct(productToKeep), productToKeep + " should be displayed in the cart");
+		cartPage.removeProduct(input.get("productToRemove"));
+		Assert.assertFalse(cartPage.containsProduct(input.get("productToRemove")),
+				input.get("productToRemove") + " is still displayed after removal");
+		Assert.assertTrue(cartPage.containsProduct(input.get("productToKeep")),
+				input.get("productToKeep") + " should be displayed in the cart");
 	}
 
-	@Test
-	public void productLineTotalShouldChangeWithQuantity() {
-		String productName = "Pliers";
-		int newQuantity = 2;
+	@Test(dataProvider = "productQuantityData")
+	public void productLineTotalShouldChangeWithQuantity(Map<String, String> input) {
+		String productName = input.get("productName");
+
+		int newQuantity = Integer.parseInt(input.get("newQuantity"));
 
 		CartPage cartPage = homePage.openProductByName(productName).addToCart().goToCartPage();
 
@@ -75,29 +78,23 @@ public class CartPageTest extends BaseTest {
 		Assert.assertEquals(displayedTotal.compareTo(calculatedTotal), 0,
 				"Displayed cart total does not match " + "the sum of product line totals");
 	}
-	
+
 	@Test
 	public void emptyCartMessageShouldBeDisplayedAfterRemovingLastProduct() {
-	    String productName = "Combination Pliers";
+		String productName = "Combination Pliers";
 
-	    CartPage cartPage = homePage
-	            .openProductByName(productName)
-	            .addToCart()
-	            .goToCartPage();
+		CartPage cartPage = homePage.openProductByName(productName).addToCart().goToCartPage();
 
-	    cartPage.removeProduct(productName);
+		cartPage.removeProduct(productName);
 
-	    Assert.assertTrue(
-	            cartPage.isEmpty(),
-	            "Cart should be empty after removing the last product"
-	    );
+		Assert.assertTrue(cartPage.isEmpty(), "Cart should be empty after removing the last product");
 	}
 
-	@Test
-	public void loggedInUserShouldProceedToBillingAddress() {
+	@Test(dataProvider = "customerCheckoutData")
+	public void loggedInUserShouldProceedToBillingAddress(Map<String, String> input) {
 		CheckoutSignInPage checkoutSignInPage = homePage.goToLoginPage()
-				.submitCustomerLogin("customer@practicesoftwaretesting.com", "welcome01").goToHomePage()
-				.openProductByName("Combination Pliers").addToCart().goToCartPage().proceedToCheckout();
+				.submitCustomerLogin(input.get("email"), input.get("password")).goToHomePage()
+				.openProductByName(input.get("productName")).addToCart().goToCartPage().proceedToCheckout();
 
 		Assert.assertTrue(checkoutSignInPage.isLoggedInMessageDisplayed(),
 				"Logged-in checkout message was not displayed");
@@ -106,4 +103,22 @@ public class CartPageTest extends BaseTest {
 
 		Assert.assertTrue(billingAddressPage.isLoaded(), "Billing address step was not displayed");
 	}
+
+	@DataProvider
+	public Object[][] removeProductData() throws IOException {
+		return getDataFromJson("testdata/cart/removeProductData.json");
+	}
+
+	@DataProvider
+	public Object[][] productQuantityData() throws IOException {
+
+		return getDataFromJson("testdata/cart/productQuantityData.json");
+	}
+	@DataProvider
+	public Object[][] customerCheckoutData() throws IOException {
+
+		return getDataFromJson("testdata/login/customerLoginData.json");
+	}
+	
+	
 }

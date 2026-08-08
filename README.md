@@ -38,6 +38,15 @@ https://practicesoftwaretesting.com/
 - testcomponents — browser setup and teardown
 - tests — TestNG test classes
 
+## Test data
+
+Test data is stored in JSON files under:
+
+`src/test/resources/testdata`
+
+TestNG DataProviders deserialize JSON data using Jackson
+and pass each data set to the corresponding test.
+
 ## Reporting
 
 The framework uses TestNG listeners and ExtentReports.
@@ -60,3 +69,12 @@ Generated output:
 application defect and belongs to the `knownBug` TestNG group.
 
 The regression suite excludes this group through `testng.xml`.
+
+## Running tests
+
+Run the full regression suite:
+
+```bash
+mvn clean test 
+```
+
