@@ -45,7 +45,7 @@ class CartItemComponent {
 		WebElement quantityField = rootElement.findElement(By.cssSelector("input[data-test='product-quantity']"));
 
 		quantityField.clear();
-		quantityField.sendKeys(String.valueOf(quantity), Keys.TAB);
+		quantityField.sendKeys(String.valueOf(quantity), Keys.ENTER);
 
 		wait.until(ExpectedConditions.stalenessOf(rootElement));
 	}

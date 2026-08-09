@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-
+import org.openqa.selenium.chrome.ChromeOptions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernandoqa.pageobjects.HomePage;
@@ -74,20 +74,32 @@ public class BaseTest {
 			prop.load(inputStream);
 		}
 
-		baseUrl = prop.getProperty("baseUrl");
-
-		String browserName = prop.getProperty("browser").trim().toLowerCase();
+		baseUrl = prop.getProperty("baseUrl").trim();
+		
+		String browserFromMaven = System.getProperty("browser");
+	    String browserName = browserFromMaven != null ? browserFromMaven : prop.getProperty("browser");
+	    browserName = browserName.trim().toLowerCase();
+	    
+		boolean headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
+		
 		WebDriver createdDriver;
 		switch (browserName) {
 		case "chrome":
-			createdDriver = new ChromeDriver();
+			ChromeOptions options = new ChromeOptions();
+			if (headless) {
+				options.addArguments("--headless=new");
+				options.addArguments("--window-size=1920,1080");
+			}
+			createdDriver = new ChromeDriver(options);
 			break;
 
 		default:
 			throw new IllegalArgumentException("Unsupported browser: " + browserName);
 		}
 
-		createdDriver.manage().window().maximize();
+		if (!headless) {
+	        createdDriver.manage().window().maximize();
+	    }
 		return createdDriver;
 
 	}
