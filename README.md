@@ -66,15 +66,52 @@ Generated output:
 ## Known issues
 
 `adminUserMenuShouldBeDisplayedAfterLogin` documents a confirmed
-application defect and belongs to the `knownBug` TestNG group.
+application defect and belongs to the `knownBug` regression group.
 
-The regression suite excludes this group through `testng.xml`.
+The regression suite excludes this group through
+`testSuites/regression.xml`.
 
 ## Running tests
 
-Run the full regression suite:
+Run the default regression suite:
 
 ```bash
-mvn clean test 
+mvn clean test
 ```
 
+Run regression explicitly:
+
+```bash
+mvn clean test -PRegression
+```
+
+Run smoke tests:
+
+```bash
+mvn clean test -PSmoke
+```
+
+Run regression in Firefox headless:
+
+```bash
+mvn clean test -PRegression -Dbrowser=firefox -Dheadless=true
+```
+
+Supported browsers:
+
+- Chrome
+- Firefox
+- Edge
+
+## CI/CD
+
+The project has been integrated with a local Jenkins CI job.
+
+The Jenkins job:
+- checks out the latest project version from GitHub;
+- runs TestNG suites through Maven;
+- supports Chrome, Firefox and Edge;
+- supports headless execution;
+- supports Smoke and Regression suite selection;
+- publishes Surefire test results;
+- archives ExtentReports and Surefire artifacts.

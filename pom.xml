@@ -62,6 +62,31 @@
 
 	</dependencies>
 
+	<profiles>
+
+		<profile>
+			<id>Regression</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<properties>
+				<suiteXmlFile>testSuites/regression.xml</suiteXmlFile>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>Smoke</id>
+
+			<properties>
+				<suiteXmlFile>testSuites/smoke.xml</suiteXmlFile>
+			</properties>
+		</profile>
+
+	</profiles>
+
+
 	<build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven
 			defaults (may be moved to parent pom) -->
@@ -88,7 +113,7 @@
 					<configuration>
 						<suiteXmlFiles>
 							<suiteXmlFile>
-								${project.basedir}/testSuites/testng.xml
+								${suiteXmlFile}
 							</suiteXmlFile>
 						</suiteXmlFiles>
 					</configuration>

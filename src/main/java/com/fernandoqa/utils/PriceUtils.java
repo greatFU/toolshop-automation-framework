@@ -3,7 +3,6 @@ package com.fernandoqa.utils;
 import java.math.BigDecimal;
 
 public final class PriceUtils {
-//dhsicuh
     private PriceUtils() {
     }
 

@@ -15,7 +15,7 @@ import com.fernandoqa.testcomponents.BaseTest;
 public class ProductPageTest extends BaseTest {
 
 
-	@Test(dataProvider = "productsToAddData")
+	@Test(dataProvider = "productsToAddData", groups = {"smoke", "regression"})
 	public void selectedProductDetailsShouldOpen(Map<String,String> input) {
 		ProductPage productPage = homePage.openProductByName(input.get("productName"));
 		Assert.assertTrue(productPage.isLoaded(), "Product page was not loaded");
@@ -23,7 +23,7 @@ public class ProductPageTest extends BaseTest {
 		Assert.assertEquals(productPage.getProductName(), input.get("productName"), "Wrong product name was opened");
 	}
 
-	@Test(dataProvider = "productsToAddData")
+	@Test(dataProvider = "productsToAddData", groups = {"smoke", "regression"})
 	public void productShouldBeAddedToCart(Map<String,String> input) {
 		CartPage cartPage = homePage.openProductByName(input.get("productName")).addToCart().goToCartPage();
 		Assert.assertTrue(cartPage.containsProduct(input.get("productName")), "Product was not found in cart: " + input.get("productName"));

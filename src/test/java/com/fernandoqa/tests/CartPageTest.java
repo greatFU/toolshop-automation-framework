@@ -17,7 +17,7 @@ import com.fernandoqa.testcomponents.BaseTest;
 
 public class CartPageTest extends BaseTest {
 
-	@Test
+	@Test(groups = {"smoke", "regression"})
 	public void addedProductsShouldBeDisplayed() {
 		List<String> products = List.of("Combination Pliers", "Hammer");
 		ShoppingFlow shoppingFlow = new ShoppingFlow();
@@ -30,7 +30,7 @@ public class CartPageTest extends BaseTest {
 				"Expected products: " + products + ", but cart contained: " + actualProducts);
 	}
 
-	@Test(dataProvider = "removeProductData")
+	@Test(dataProvider = "removeProductData", groups = "regression")
 	public void selectedItemShouldBeDeleted(Map<String, String> input) {
 
 		List<String> products = List.of(input.get("productToKeep"), input.get("productToRemove"));
@@ -44,7 +44,7 @@ public class CartPageTest extends BaseTest {
 				input.get("productToKeep") + " should be displayed in the cart");
 	}
 
-	@Test(dataProvider = "productQuantityData")
+	@Test(dataProvider = "productQuantityData", groups = "regression")
 	public void productLineTotalShouldChangeWithQuantity(Map<String, String> input) {
 		String productName = input.get("productName");
 
@@ -64,7 +64,7 @@ public class CartPageTest extends BaseTest {
 				"Product line total was not recalculated correctly");
 	}
 
-	@Test
+	@Test(groups = "regression")
 	public void displayedCartTotalShouldMatchCalculatedTotal() {
 		List<String> products = List.of("Claw Hammer", "Combination Pliers");
 
@@ -79,7 +79,7 @@ public class CartPageTest extends BaseTest {
 				"Displayed cart total does not match " + "the sum of product line totals");
 	}
 
-	@Test
+	@Test(groups = "regression")
 	public void emptyCartMessageShouldBeDisplayedAfterRemovingLastProduct() {
 		String productName = "Combination Pliers";
 
@@ -90,7 +90,7 @@ public class CartPageTest extends BaseTest {
 		Assert.assertTrue(cartPage.isEmpty(), "Cart should be empty after removing the last product");
 	}
 
-	@Test(dataProvider = "customerCheckoutData")
+	@Test(dataProvider = "customerCheckoutData", groups = {"smoke", "regression"})
 	public void loggedInUserShouldProceedToBillingAddress(Map<String, String> input) {
 		CheckoutSignInPage checkoutSignInPage = homePage.goToLoginPage()
 				.submitCustomerLogin(input.get("email"), input.get("password")).goToHomePage()

@@ -7,14 +7,14 @@ import com.fernandoqa.testcomponents.BaseTest;
 
 public class HomePageTest extends BaseTest {
 
-	@Test
+	@Test(groups = {"smoke", "regression"})
 	public void homePageShouldLoad()
 	{
 		Assert.assertTrue(homePage.isLoaded(), 
 				"Home page was not loaded");
 	}
 	
-	@Test
+	@Test(groups = {"smoke", "regression"})
 	public void productsShouldBeDisplayed() {
 	    Assert.assertTrue(
 	        homePage.getDisplayedProductsCount() > 0,

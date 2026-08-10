@@ -12,6 +12,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernandoqa.pageobjects.HomePage;
@@ -75,13 +80,13 @@ public class BaseTest {
 		}
 
 		baseUrl = prop.getProperty("baseUrl").trim();
-		
+
 		String browserFromMaven = System.getProperty("browser");
-	    String browserName = browserFromMaven != null ? browserFromMaven : prop.getProperty("browser");
-	    browserName = browserName.trim().toLowerCase();
-	    
+		String browserName = browserFromMaven != null ? browserFromMaven : prop.getProperty("browser");
+		browserName = browserName.trim().toLowerCase();
+
 		boolean headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
-		
+
 		WebDriver createdDriver;
 		switch (browserName) {
 		case "chrome":
@@ -93,13 +98,35 @@ public class BaseTest {
 			createdDriver = new ChromeDriver(options);
 			break;
 
+		case "firefox":
+			FirefoxOptions firefoxOptions = new FirefoxOptions();
+
+			if (headless) {
+				firefoxOptions.addArguments("-headless");
+				firefoxOptions.addArguments("--window-size=1920,1080");
+			}
+
+			createdDriver = new FirefoxDriver(firefoxOptions);
+			break;
+
+		case "edge":
+			EdgeOptions edgeOptions = new EdgeOptions();
+
+			if (headless) {
+				edgeOptions.addArguments("--headless=new");
+				edgeOptions.addArguments("--window-size=1920,1080");
+			}
+
+			createdDriver = new EdgeDriver(edgeOptions);
+			break;
+
 		default:
 			throw new IllegalArgumentException("Unsupported browser: " + browserName);
 		}
 
 		if (!headless) {
-	        createdDriver.manage().window().maximize();
-	    }
+			createdDriver.manage().window().maximize();
+		}
 		return createdDriver;
 
 	}

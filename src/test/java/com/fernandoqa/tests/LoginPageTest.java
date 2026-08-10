@@ -14,7 +14,7 @@ import com.fernandoqa.testcomponents.BaseTest;
 public class LoginPageTest extends BaseTest {
 
 	
-	@Test(dataProvider = "adminLoginData")
+	@Test(dataProvider = "adminLoginData", groups = {"smoke", "regression"})
 	public void adminShouldLoginWithValidCredentials(Map<String, String> input) {
 		LoginPage loginPage = homePage.goToLoginPage();
 
@@ -23,7 +23,7 @@ public class LoginPageTest extends BaseTest {
 		Assert.assertTrue(dashboardPage.isLoaded(), "Admin dashboard was not loaded");
 	}
 	
-	@Test(dataProvider = "adminLoginData", groups = "knownBug")
+	@Test(dataProvider = "adminLoginData", groups = {"knownBug", "regression"})
 	public void adminUserMenuShouldBeDisplayedAfterLogin(Map<String, String> input) {
 	    LoginPage loginPage = homePage.goToLoginPage();
 
@@ -36,7 +36,7 @@ public class LoginPageTest extends BaseTest {
 	    );
 	}
 
-	@Test(dataProvider = "invalidLoginData")
+	@Test(dataProvider = "invalidLoginData", groups = "regression")
 	public void invalidLoginShouldDisplayError(Map<String, String> input) {
 		LoginPage loginPage = homePage.goToLoginPage();
 		loginPage.submitInvalidLogin(input.get("email"), input.get("password"));

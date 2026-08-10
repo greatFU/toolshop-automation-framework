@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Toolshop Smoke Suite">
+
+    <listeners>
+        <listener class-name="com.fernandoqa.testcomponents.TestListener"/>
+    </listeners>
+
+    <test name="Smoke Tests">
+
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <exclude name="knownBug"/>
+            </run>
+        </groups>
+
+        <packages>
+            <package name="com.fernandoqa.tests"/>
+        </packages>
+
+    </test>
+
+</suite>
