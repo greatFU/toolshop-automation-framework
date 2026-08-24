@@ -2,8 +2,9 @@ package com.fernandoqa.pageobjects.cart;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,53 +23,88 @@ public class CartPage extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(css = ".table-hover tbody tr")
-	private List<WebElement> productRows;
+	private static final By PRODUCT_ROWS = By.cssSelector(".table-hover tbody tr");
 
 	@FindBy(css = "td[data-test='cart-total']")
 	private WebElement totalPrice;
 
 	@FindBy(xpath = "//app-cart//p[normalize-space()='The cart is empty. Nothing to display.']")
 	private WebElement emptyCartMessage;
-	
+
 	@FindBy(css = "button[data-test='proceed-1']")
 	private WebElement proceedToCheckoutBtn;
-	
-	
+
 	private void waitForCartState() {
-	    wait.until(ExpectedConditions.or(
-	            ExpectedConditions.visibilityOfAllElements(productRows),
-	            ExpectedConditions.visibilityOf(emptyCartMessage)
-	    ));
+		wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOfAllElementsLocatedBy(PRODUCT_ROWS),
+				ExpectedConditions.visibilityOf(emptyCartMessage)));
 	}
-	
+
 	private List<CartItemComponent> getCartItems() {
+
 		waitForCartState();
-		return productRows.stream().map(row -> new CartItemComponent(driver, row)).toList();
+
+		return driver.findElements(PRODUCT_ROWS).stream().filter(WebElement::isDisplayed)
+				.map(row -> new CartItemComponent(driver, row)).toList();
+	}
+
+	private CartItemComponent findProductByNameNow(String productName) {
+
+		return driver.findElements(PRODUCT_ROWS).stream().filter(WebElement::isDisplayed)
+				.map(row -> new CartItemComponent(driver, row))
+				.filter(product -> product.getProductName().equalsIgnoreCase(productName)).findFirst().orElse(null);
 	}
 
 	private CartItemComponent getProductByName(String productName) {
-		return getCartItems().stream().filter(product -> product.getProductName().equalsIgnoreCase(productName))
-				.findFirst()
-				.orElseThrow(() -> new NoSuchElementException("Product was not found in cart: " + productName));
+
+		return wait.until(driver -> {
+			try {
+				return findProductByNameNow(productName);
+
+			} catch (StaleElementReferenceException | NoSuchElementException exception) {
+
+				return null;
+			}
+		});
+	}
+
+	private void waitForProductUpdate(String productName, int expectedQuantity, BigDecimal previousLineTotal) {
+
+		wait.until(driver -> {
+			try {
+				CartItemComponent product = findProductByNameNow(productName);
+
+				if (product == null) {
+					return false;
+				}
+
+				boolean quantityUpdated = product.getQuantity() == expectedQuantity;
+
+				boolean lineTotalUpdated = product.getLineTotal().compareTo(previousLineTotal) != 0;
+
+				return quantityUpdated && lineTotalUpdated;
+
+			} catch (StaleElementReferenceException | NoSuchElementException exception) {
+
+				return false;
+			}
+		});
 	}
 
 	private void waitForDisplayedTotalToMatchCalculatedTotal() {
-	    wait.until(driver -> {
-	        try {
-	            BigDecimal calculatedTotal =
-	                    getCalculatedItemsTotal();
 
-	            BigDecimal displayedTotal =
-	                    getDisplayedCartTotal();
+		wait.until(driver -> {
+			try {
+				BigDecimal calculatedTotal = getCalculatedItemsTotal();
 
-	            return calculatedTotal
-	                    .compareTo(displayedTotal) == 0;
+				BigDecimal displayedTotal = getDisplayedCartTotal();
 
-	        } catch (StaleElementReferenceException exception) {
-	            return false;
-	        }
-	    });
+				return calculatedTotal.compareTo(displayedTotal) == 0;
+
+			} catch (StaleElementReferenceException | NoSuchElementException exception) {
+
+				return false;
+			}
+		});
 	}
 
 	public int getProductQuantity(String productName) {
@@ -79,8 +115,13 @@ public class CartPage extends AbstractComponent {
 		return getProductByName(productName).getLineTotal();
 	}
 
+	public BigDecimal getProductUnitPrice(String productName) {
+		return getProductByName(productName).getUnitPrice();
+	}
+
 	public BigDecimal getCalculatedItemsTotal() {
-		return getCartItems().stream().map(CartItemComponent::getLineTotal).reduce(BigDecimal.ZERO, (BigDecimal::add));
+
+		return getCartItems().stream().map(CartItemComponent::getLineTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	public BigDecimal getDisplayedCartTotal() {
@@ -91,41 +132,54 @@ public class CartPage extends AbstractComponent {
 	}
 
 	public void changeProductQuantity(String productName, int quantity) {
+
 		CartItemComponent product = getProductByName(productName);
+
 		if (quantity == product.getQuantity()) {
 			return;
-		}		
+		}
+
+		BigDecimal previousLineTotal = product.getLineTotal();
+
 		product.changeQuantity(quantity);
+
+		waitForProductUpdate(productName, quantity, previousLineTotal);
+
 		waitForDisplayedTotalToMatchCalculatedTotal();
 	}
 
 	public List<String> getProductNames() {
+
 		return getCartItems().stream().map(CartItemComponent::getProductName).toList();
 	}
 
 	public boolean containsProduct(String productName) {
+
 		return getProductNames().stream().anyMatch(name -> name.equalsIgnoreCase(productName));
 	}
 
-	public BigDecimal getProductUnitPrice(String productName)
-	{
-		return getProductByName(productName).getUnitPrice();
-	}
 	public void removeProduct(String productName) {
+
 		getProductByName(productName).remove();
+
 		waitForCartState();
-		if(!productRows.isEmpty()) {
+
+		if (!driver.findElements(PRODUCT_ROWS).isEmpty()) {
 			waitForDisplayedTotalToMatchCalculatedTotal();
 		}
 	}
-	
+
 	public boolean isEmpty() {
-	    waitForCartState();
-	    return productRows.isEmpty();
+
+		waitForCartState();
+
+		return driver.findElements(PRODUCT_ROWS).isEmpty();
 	}
 
 	public CheckoutSignInPage proceedToCheckout() {
-	    waitForClickability(proceedToCheckoutBtn).click();
-	    return new CheckoutSignInPage(driver);
+
+		waitForClickability(proceedToCheckoutBtn).click();
+
+		return new CheckoutSignInPage(driver);
 	}
 }

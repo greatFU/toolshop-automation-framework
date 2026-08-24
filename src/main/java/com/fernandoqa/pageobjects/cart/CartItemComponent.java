@@ -46,8 +46,6 @@ class CartItemComponent {
 
 		quantityField.clear();
 		quantityField.sendKeys(String.valueOf(quantity), Keys.ENTER);
-
-		wait.until(ExpectedConditions.stalenessOf(rootElement));
 	}
 
 	BigDecimal getLineTotal() {

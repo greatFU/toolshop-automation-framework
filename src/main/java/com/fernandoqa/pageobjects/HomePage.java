@@ -1,9 +1,9 @@
 package com.fernandoqa.pageobjects;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -19,18 +19,24 @@ public class HomePage extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 	
+	private static final By PRODUCT_CARDS =
+	        By.cssSelector("a.card");
+
+	private static final By PRODUCT_NAME =
+	        By.cssSelector("h5[data-test='product-name']");
+	
 	@FindBy(css = "a[data-test='nav-sign-in']")
 	private WebElement signInBtn;
-
-	@FindBy(css = "a.card")
-	private List<WebElement> products;
 
 	public void open(String url) {
 		driver.get(url);
 	}
 
 	private List<WebElement> waitForProducts() {
-		return wait.until(ExpectedConditions.visibilityOfAllElements(products));
+	    return wait.until(
+	            ExpectedConditions
+	                    .visibilityOfAllElementsLocatedBy(PRODUCT_CARDS)
+	    );
 	}
 	
 	public boolean isLoaded() {
@@ -47,10 +53,25 @@ public class HomePage extends AbstractComponent {
 	}
 
 	private WebElement getProductByName(String productName) {
-		return waitForProducts().stream().filter(element -> element
-				.findElement(By.cssSelector("h5[data-test='product-name']")).getText()
-				.trim().equalsIgnoreCase(productName))
-				.findFirst().orElseThrow(() -> new NoSuchElementException("Product was not found: " + productName));
+
+	    return wait.until(driver -> {
+	        try {
+	            return driver.findElements(PRODUCT_CARDS)
+	                    .stream()
+	                    .filter(WebElement::isDisplayed)
+	                    .filter(product ->
+	                            product.findElement(PRODUCT_NAME)
+	                                    .getText()
+	                                    .trim()
+	                                    .equalsIgnoreCase(productName))
+	                    .findFirst()
+	                    .orElse(null);
+
+	        } catch (StaleElementReferenceException |
+	                 org.openqa.selenium.NoSuchElementException exception) {
+	            return null;
+	        }
+	    });
 	}
 	
 	public ProductPage openProductByName(String productName)
