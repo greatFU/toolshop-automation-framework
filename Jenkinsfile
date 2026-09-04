@@ -111,6 +111,12 @@ pipeline {
 	
 	stage('Run UI Tests') {
     steps {
+
+        bat '''
+        if exist screenshots rmdir /s /q screenshots
+        if exist reports rmdir /s /q reports
+        '''
+
         bat """
         mvn clean test ^
             -P${params.PROFILE} ^
@@ -118,8 +124,8 @@ pipeline {
             -Dheadless=${params.HEADLESS} ^
             -DbaseUrl=http://localhost:4200
         """
-    	}
-	}
+    }
+}
 	}
 	
 	post {
