@@ -63,11 +63,22 @@ pipeline {
     }
 }
 
-	stage('Wait for Composer') {
-    	steps {
-        	dir('toolshop-app') {
-            	bat 'docker compose wait composer'
-            	bat 'docker compose ps -a'
+	sstage('Wait for Composer') {
+    steps {
+        dir('toolshop-app') {
+            script {
+                int composerExitCode = bat(
+                    script: 'docker compose wait composer',
+                    returnStatus: true
+                )
+
+                if (composerExitCode != 0) {
+                    bat 'docker compose logs --no-color --tail=200 composer'
+                    error("Composer failed with exit code ${composerExitCode}")
+                }
+
+                bat 'docker compose ps -a'
+            }
         }
     }
 }
