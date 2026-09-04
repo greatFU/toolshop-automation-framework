@@ -78,8 +78,11 @@ public class BaseTest {
 		try (FileInputStream inputStream = new FileInputStream(configPath)) {
 			prop.load(inputStream);
 		}
+		String baseUrlFromMaven = System.getProperty("baseUrl");
 
-		baseUrl = prop.getProperty("baseUrl").trim();
+		baseUrl = (baseUrlFromMaven != null
+		        ? baseUrlFromMaven
+		        : prop.getProperty("baseUrl")).trim();
 
 		String browserFromMaven = System.getProperty("browser");
 		String browserName = browserFromMaven != null ? browserFromMaven : prop.getProperty("browser");
