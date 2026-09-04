@@ -53,5 +53,14 @@ pipeline {
             }
         }
     }
+    
+    stage('Start Toolshop') {
+    	steps {
+        	dir('toolshop-app') {
+            	bat 'docker compose up -d --build'
+            	bat 'docker compose ps -a'
+        }
+    }
+}
 }
 }
