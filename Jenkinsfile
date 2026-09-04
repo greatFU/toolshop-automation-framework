@@ -123,6 +123,7 @@ pipeline {
 	}
 	
 	post {
+
     failure {
         dir('toolshop-app') {
             bat 'docker compose ps -a'
@@ -131,6 +132,17 @@ pipeline {
     }
 
     always {
+
+        junit(
+            testResults: 'target/surefire-reports/TEST-*.xml',
+            allowEmptyResults: true
+        )
+
+        archiveArtifacts(
+            artifacts: 'reports/**, target/surefire-reports/**, screenshots/**',
+            allowEmptyArchive: true
+        )
+
         dir('toolshop-app') {
             bat 'docker compose down'
         }
