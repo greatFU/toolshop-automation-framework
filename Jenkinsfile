@@ -112,10 +112,17 @@ pipeline {
 	}
 	
 	post {
-    	always {
-        	dir('toolshop-app') {
-            	bat 'docker compose down'
-        	}
-    	}
-	}
+    failure {
+        dir('toolshop-app') {
+            bat 'docker compose ps -a'
+            bat 'docker compose logs --no-color --tail=200 angular-ui'
+        }
+    }
+
+    always {
+        dir('toolshop-app') {
+            bat 'docker compose down'
+        }
+    }
+}
 }
