@@ -63,7 +63,7 @@ pipeline {
     }
 }
 
-	sstage('Wait for Composer') {
+	stage('Wait for Composer') {
     steps {
         dir('toolshop-app') {
             script {
