@@ -27,19 +27,31 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
 
-        stage('Verify') {
-            steps {
-                bat 'git status'
-                bat 'mvn -version'
-                bat 'docker --version'
-                bat 'docker compose version'
+    stage('Checkout') {
+        steps {
+            checkout scm
+        }
+    }
+
+    stage('Verify') {
+        steps {
+            bat 'git status'
+            bat 'mvn -version'
+            bat 'docker --version'
+            bat 'docker compose version'
+        }
+    }
+
+    stage('Checkout Toolshop') {
+        steps {
+            dir('toolshop-app') {
+                deleteDir()
+
+                git branch: 'main',
+                    url: 'https://github.com/testsmith-io/practice-software-testing.git'
             }
         }
     }
+}
 }
