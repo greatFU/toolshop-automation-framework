@@ -62,5 +62,14 @@ pipeline {
         }
     }
 }
+
+	stage('Wait for Composer') {
+    	steps {
+        	dir('toolshop-app') {
+            	bat 'docker compose wait composer'
+            	bat 'docker compose ps -a'
+        }
+    }
+}
 }
 }
