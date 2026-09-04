@@ -71,5 +71,12 @@ pipeline {
         }
     }
 }
+	stage('Prepare Database') {
+    	steps {
+        	dir('toolshop-app') {
+            	bat 'docker compose exec -T laravel-api php artisan migrate:fresh --seed'
+        }
+    }
+}
 }
 }
