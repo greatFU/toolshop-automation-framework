@@ -78,5 +78,24 @@ pipeline {
         }
     }
 }
+	stage('Wait for Application') {
+    	steps {
+        	bat '''
+        	@echo off
+        	for /L %%i in (1,1,60) do (
+            	curl.exe -fsS http://localhost:8091/brands >nul 2>&1 && curl.exe -fsS http://localhost:4200 >nul 2>&1 && (
+                	echo Toolshop is ready
+                	exit /b 0
+            )
+
+            echo Waiting for Toolshop... %%i/60
+            timeout /t 2 /nobreak >nul
+        )
+
+        echo Toolshop did not become ready
+        exit /b 1
+        '''
+    }
+}
 }
 }
