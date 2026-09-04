@@ -97,5 +97,25 @@ pipeline {
         	'''
     	}
 	}
-}
+	
+	stage('Run UI Tests') {
+    steps {
+        bat """
+        mvn clean test ^
+            -P${params.PROFILE} ^
+            -Dbrowser=${params.BROWSER} ^
+            -Dheadless=${params.HEADLESS} ^
+            -DbaseUrl=http://localhost:4200
+        """
+    	}
+	}
+	}
+	
+	post {
+    	always {
+        	dir('toolshop-app') {
+            	bat 'docker compose down'
+        	}
+    	}
+	}
 }
